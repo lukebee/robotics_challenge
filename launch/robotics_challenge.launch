@@ -5,7 +5,7 @@
 
     <arg name="init_x" default ="0" />
     <arg name="init_y" default ="-4.4"/>
-    <!-- <arg name="init_a" default ="0" /> -->
+    <arg name="init_a" default ="0" />
 	<arg name="goal_x" default ="2" />
 	<arg name="goal_y" default ="4.85" />
 
@@ -29,15 +29,15 @@
 	</include>
 
 
-    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_burger.urdf.xacro" />
-    <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"  args="-urdf -model turtlebot3_burger -x $(arg init_x) -y $(arg init_y) -z 0 -param robot_description" />
+    <param name="robot_description" command="$(find xacro)/xacro $(find turtlebot3_description)/urdf/turtlebot3_waffle.urdf.xacro" />
+    <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"  args="-urdf -model turtlebot3_waffle -x $(arg init_x) -y $(arg init_y) -z 0 -param robot_description" />
 
     <!-- for GT -->
 	<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
     	<param name="publish_frequency" type="double" value="30.0" />
   	</node>
 
-    <node name="metrics" pkg="robotics_challenge" type="metrics.py" output="screen">
+    <node name="metrics" pkg="robotics_challenge" type="metrics.py" >
         <param name="output_file" value="$(find robotics_challenge)/metrics.txt"/>
         <param name="goal/x" value="$(arg goal_x)"/>
         <param name="goal/y" value="$(arg goal_y)"/>
@@ -49,11 +49,13 @@
     </node>
 	
 	<!--Start the Montecarlo Localization module-->
-    <arg name="initial_pose_y" default="0"/>
+    <arg name="init_x_mcl" default ="$(arg init_x)" />
+    <arg name="init_y_mcl" default ="$(arg init_y)"/>
+    <arg name="init_a_mcl" default ="$(arg init_a)"/>
 	<node pkg="amcl" type="amcl" name="amcl" args="scan:=/scan">
-		<param name="initial_pose_x" value="0" /> 
-        <param name="initial_pose_y" value="$(arg initial_pose_y)" />
-		<param name="initial_pose_a" value="0" />
+		<param name="initial_pose_x" value="$(arg init_x_mcl)" /> 
+        <param name="initial_pose_y" value="$(arg init_y_mcl)" />
+		<param name="initial_pose_a" value="$(arg init_a_mcl)" />
 	</node>
 
 	<node pkg="rviz" type="rviz" name="rviz" args="-d $(find robotics_challenge)/rviz/turtlebot.rviz"/>
