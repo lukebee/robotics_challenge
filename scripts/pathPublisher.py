@@ -21,7 +21,6 @@ class PathPlanner:
         self.initx = float(rospy.get_param('~initial_pose_x'))
         self.inity = float(rospy.get_param('~initial_pose_y'))
 
-    
         self.goalx = float(rospy.get_param('~goal/x'))
         self.goaly = float(rospy.get_param('~goal/y'))
         
@@ -29,19 +28,14 @@ class PathPlanner:
             self.world = rospy.get_param("~world")
         else:
             self.world = 0
-        
-        
+
     def path_callback(self, map):
-        
-        
-            
         self.map = map
         if self.firstCall == False:
             rospy.loginfo("+++++++++++++++++initX: " + str(self.initx) + " initY: " + str(self.inity) + " goalX: " + str(self.goalx) + " goalY: " + str(self.goaly))
             self.firstCall = True
             
             if self.world != 0:
-            
                 dijkstra = Dijkstra(self.map)
                 self.path = dijkstra.planning(self.initx, self.inity, self.goalx, self.goaly)
                 self.save_as_yaml(self.path)
@@ -79,11 +73,7 @@ class PathPlanner:
                     poses.append(p_stamp)
                 my_path.poses = poses
                 self.pathPublisher.publish(my_path)
-            
-            
-            
-            
-            
+
     def save_as_yaml(self, path):
         goalsList = {}
         x, y = path
@@ -117,5 +107,3 @@ if __name__ == '__main__':
 
     except rospy.ROSInterruptException:
         pass
-    
-

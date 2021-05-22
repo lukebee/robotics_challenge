@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-
   <node name="pathPublisher" pkg="robotics_challenge" type="pathPublisher.py" output="screen">
     <rosparam command="load" file="$(find robotics_challenge)/cfg/pathInit.yml" />
     <param name="goals" value="$(find robotics_challenge)/cfg/goals.yml"/>
   </node>
-
 </launch>
