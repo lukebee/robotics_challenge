@@ -1,0 +1,7 @@
+goal_path: goals.yml
+init:
+    x: 0.0
+    y: 0.0
+goal:
+    x: 2
+    y: 4.85

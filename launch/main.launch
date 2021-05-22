@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="robotics_challenge" type="controlGoalParameterServer.py" name="control" output="screen">
+		<rosparam file="$(find robotics_challenge)/cfg/path.yml" />
+	</node>
+</launch>

@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="robotics_challenge" type="laser_downsample.py" name="laser" output="screen">
+	</node>
+</launch>
