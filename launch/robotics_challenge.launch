@@ -16,7 +16,10 @@
     <arg name="world_name" default="$(find robotics_challenge)/worlds/robotics_lab.world" if="$(eval scenario == 'lab')"/>
     <arg name="world_name" default="$(find robotics_challenge)/worlds/robotics_lab_obstacle.world" if="$(eval scenario == 'obstacle')"/>
     <arg name="world_name" default="$(find turtlebot3_gazebo)/worlds/turtlebot3_house.world" if="$(eval scenario == 'house')"/>
-
+    
+    <arg name="world_name_aux" default="0" if="$(eval scenario == 'lab')"/>
+    <arg name="world_name_aux" default="0" if="$(eval scenario == 'obstacle')"/>
+    <arg name="world_name_aux" default="2" if="$(eval scenario == 'house')"/>
 
     
 	
@@ -67,6 +70,7 @@
         <param name="goal/x" value="$(arg goal_x)"/>
         <param name="goal/y" value="$(arg goal_y)"/>
         <param name="goals" value="$(find robotics_challenge)/cfg/goals.yml"/>
+        <param name="world" value = "$(arg world_name_aux)" />
     </node>
 
     <include file="$(find robotics_challenge)/launch/laser.launch">

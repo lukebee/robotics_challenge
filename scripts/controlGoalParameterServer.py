@@ -52,9 +52,20 @@ class Turtlebot():
         base_goal = PointStamped()
         goal.header.frame_id = "odom"
         goal.header.stamp = rospy.Time()
+        if len(self.goals) > 3:
+            theta = 1
+            atheta = 0.1
+        else:
+            theta = 4
+            atheta = 0.2
+            
         if len(self.goals) < 1 or self.currentGoalIndex >= len(self.goals):
-            self.publish(0,0)
-            rospy.loginfo("Objetivos alcanzados")
+            if len(self.goals) < 1:
+                self.publish(0,0)
+            else:
+                rospy.loginfo("Objetivos alcanzados")
+                self.publish(0,0)
+                self.shutdown()
         else:
             goal.point.y = self.goals[self.currentGoalIndex][1]['y']
             goal.point.x = self.goals[self.currentGoalIndex][1]['x']
@@ -69,36 +80,40 @@ class Turtlebot():
             angular = math.atan2(base_goal.point.y, base_goal.point.x)
             degrees = math.degrees(angular)
             if degrees > 5:
-                angular = 0.5
-                linear = 0.2
+                angular = 0.3
+                linear = 0.1
             elif degrees < -5:
-                angular = -0.5
-                linear = 0.2
+                angular = -0.3
+                linear = 0.1
             else:
-                angular = degrees * 0.01 * 0.35
+                angular = degrees * 0.3 * 0.35
                 linear = 0.4
             
             if math.sqrt((base_goal.point.x)**2+(base_goal.point.y)**2) < 0.5:	#Check if we reached the goal
-                self.currentGoalIndex = self.currentGoalIndex + 1
+                if self.currentGoalIndex + 1 == len(self.goals):
+                    if math.sqrt((base_goal.point.x)**2+(base_goal.point.y)**2) < 0.3:
+                        self.currentGoalIndex = self.currentGoalIndex + 1
+                else:
+                    self.currentGoalIndex = self.currentGoalIndex + 1
+                
             
             x_vel = math.cos(angular) * linear
             y_vel = math.sin(angular) * linear
             self.robotAgent = Agent((0, 0), (self.robotAgent.velocity[0], self.robotAgent.velocity[1]), 0.25, 0.001, (x_vel,y_vel))
-            [newVel, lines] = orca(self.robotAgent, self.collidingAgents, 1, 0.1)
+            [newVel, lines] = orca(self.robotAgent, self.collidingAgents, theta, atheta)
             x_vel = newVel[0]
             y_vel = newVel[1]
             self.robotAgent = Agent((0, 0), (x_vel, y_vel), 0.25, 0.001, (x_vel,y_vel))
             
-            #if (math.atan2(y_vel, x_vel) - angular > 0.2 or math.atan2(y_vel, x_vel) - angular < -0.2):
-                #linear = -0.2
-            #else:
+            
             linear = math.sqrt(x_vel**2.0 + y_vel**2.0)
                 
             angular = angular + (math.atan2(y_vel, x_vel) - angular) * 10
-            angular = min(angular, 0.8)
-            angular = max(angular, -0.8)
-            #if linear < 0:
-                #angular = -angular
+                   
+            
+                
+            angular = min(angular, 0.3)
+            angular = max(angular, -0.3) 
             
             self.publish(linear,angular)
 
@@ -113,17 +128,12 @@ class Turtlebot():
         self.cmd_vel.publish(move_cmd)
         
     def shutdown(self):
-        #goalse stop command prior to shutting down the script
         rospy.sleep(1)
  
 if __name__ == '__main__':
     try:
 
         rospy.init_node('robotcontrol', anonymous=False)
-
-        #goals = rospy.get_param("/control/path")
-        #goals=sorted(goals.items())
-        #rospy.loginfo(str(goals))
 
         rospy.loginfo("To stop TurtleBot CTRL + C")
         
@@ -132,8 +142,12 @@ if __name__ == '__main__':
         rospy.on_shutdown(robot.shutdown)
 
         r = rospy.Rate(10)
-        while not rospy.is_shutdown():
+        finished = False
+        while not rospy.is_shutdown() and not finished:
             robot.command(r)
+            if len(robot.goals) > 1 and robot.currentGoalIndex >= len(robot.goals):
+                rospy.loginfo("FINISHED")
+                finished = True
             r.sleep()
 
     except Exception, e:

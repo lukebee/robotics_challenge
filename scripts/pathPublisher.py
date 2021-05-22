@@ -25,18 +25,25 @@ class PathPlanner:
         self.goalx = float(rospy.get_param('~goal/x'))
         self.goaly = float(rospy.get_param('~goal/y'))
         
+        if rospy.has_param('~world'):
+            self.world = rospy.get_param("~world")
+        else:
+            self.world = 0
+        
         
     def path_callback(self, map):
         
-
+        
+            
         self.map = map
         if self.firstCall == False:
             rospy.loginfo("+++++++++++++++++initX: " + str(self.initx) + " initY: " + str(self.inity) + " goalX: " + str(self.goalx) + " goalY: " + str(self.goaly))
             self.firstCall = True
-            dijkstra = Dijkstra(self.map)
-
-            self.path = dijkstra.planning(self.initx, self.inity, self.goalx, self.goaly)
-            if(self.path != (0, 0)):
+            
+            if self.world != 0:
+            
+                dijkstra = Dijkstra(self.map)
+                self.path = dijkstra.planning(self.initx, self.inity, self.goalx, self.goaly)
                 self.save_as_yaml(self.path)
                 x, y = self.path
                 x = x[::-1]
@@ -57,7 +64,25 @@ class PathPlanner:
                 my_path.poses = poses
                 self.pathPublisher.publish(my_path)
             else:
-                rospy.loginfo("Error en dijkstra.planning")
+                poses = []
+                self.path = [(self.goalx, self.goaly)]
+                my_path = Path()
+                my_path.header.frame_id = "map"
+                my_path.header.stamp = rospy.get_rostime()
+                for i in range(2):
+                    p_stamp = PoseStamped()
+                    p_stamp.pose.position.x = self.goalx
+                    p_stamp.pose.position.y = self.goaly
+                    p_stamp.pose.position.z = 0
+                    p_stamp.header.frame_id = "map"
+                    p_stamp.header.stamp = rospy.get_rostime()
+                    poses.append(p_stamp)
+                my_path.poses = poses
+                self.pathPublisher.publish(my_path)
+            
+            
+            
+            
             
     def save_as_yaml(self, path):
         goalsList = {}
