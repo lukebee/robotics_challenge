@@ -11,14 +11,14 @@ The repository can be found in https://github.com/lukebee/robotics_challenge
 
 ## Installation and Configuration
 
-Clone the repository in your ~/catkin_ws/ folder.
-Run rosrun robotics_challenge install.bash
-In a terminal, run source ~/catkin_ws/devel/setup.bash and move inside the catkin_ws folder.
-Run catkin_make.
-In a new terminal run source /opt/ros/melodic/setup.bash  and roscore.
-You are ready to run the maps now. You can see the different commands for running the maps in section How to run.
+- Clone the repository in your ~/catkin_ws/ folder.
+- Run rosrun robotics_challenge install.bash
+- In a terminal, run source ~/catkin_ws/devel/setup.bash and move inside the catkin_ws folder.
+- Run catkin_make.
+- In a new terminal run source /opt/ros/melodic/setup.bash  and roscore.
+- You are ready to run the maps now. You can see the different commands for running the maps in section How to run.
 
-The initial coordinates and the final goals can be specified in the parameter contained in the file /launch/robotics_challenge.launch. The parameters are init_x, init_y init_a, goal_x and goal_y. Take in consideration that que initial points will be overwritten in map number 3.
+The initial coordinates and the final goals can be specified in the parameter contained in the file /launch/robotics_challenge.launch. The parameters are init_x, init_y init_a, goal_x and goal_y. Take in consideration that initial points will be overwritten in map number 3.
 
 ## How to run?
 There are three different world that can be run in terms of this challenge:
