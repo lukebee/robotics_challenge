@@ -39,8 +39,6 @@ $  rosrun robotics_challenge robotics_challenge_3.bash
 So far we have encountered not that small number of either small or major difficulties and majority of them we were able to solve, and the rest, unfortunately, we weren’t. 
 Here we will make a list of the major issues we stumbled upon since the small issues (eg. file permission issues, package installation in the first version, etc.) were easy to solve. At first we got stuck understanding how ORCA works and how some parameters should be adjusted as well as their meaning and impact on the algorithm's output. Also, regarding the obstacle avoidance we had challenges in adjusting the angular and linear velocity depending on ORCA’s output so the robot doesn’t do any weird and unexpected things. We have had many trials and errors in order to adjust velocities, some of them have been working better, but in the end we haven’t managed to adjust it. Furthermore, we were facing issues with A* algorithm and its parameter (value in costmap.data) which caused the algorithm to be stuck in an infinite loop. After many attempts, we have decided to disable A* algorithm on the first two maps.  
 
-
-
 ## Path planning
 For path planning we are using pathPublisher.py node which takes initial and goal coordinates as well as costmap and sends those values to dijkstra.py. After A* finds the path we transform this path in series of points and publish those to controlGoalParameterServer.py. Also, we have been publishing those points to the yaml file for testing purposes. The important note about the first two worlds is that they
 don't use A* algorithm for finding the optimal path since we haven't managed to adjust the A* parameter (value in costmap.data used ) in a way that it works with every mentioned world.
