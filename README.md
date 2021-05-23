@@ -7,8 +7,6 @@ Robotic challenge scenarios for the Robotics and Advanced subject of UPO's Softw
 Alvaro Navarro Mora & Luka Bubalo
 ```
 
-The repository can be found in https://github.com/lukebee/robotics_challenge
-
 ## Installation and Configuration
 
 - Clone the repository in your ~/catkin_ws/ folder.
