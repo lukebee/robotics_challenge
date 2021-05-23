@@ -57,6 +57,7 @@ class Turtlebot():
                 rospy.loginfo("Objetivos alcanzados")
                 self.publish(0,0)
                 self.shutdown()
+                rospy.signal_shutdown("Finished")
         else:
             goal.point.y = self.goals[self.currentGoalIndex][1]['y']
             goal.point.x = self.goals[self.currentGoalIndex][1]['x']
@@ -95,6 +96,7 @@ class Turtlebot():
             self.robotAgent = Agent((0, 0), (x_vel, y_vel), 0.25, 0.001, (x_vel,y_vel))
 
             linear = math.sqrt(x_vel**2.0 + y_vel**2.0)
+            linear = min(linear, 0.4)
             angular = angular + (math.atan2(y_vel, x_vel) - angular) * 10
             angular = min(angular, 0.3)
             angular = max(angular, -0.3) 
@@ -119,12 +121,8 @@ if __name__ == '__main__':
         rospy.on_shutdown(robot.shutdown)
 
         r = rospy.Rate(10)
-        finished = False
-        while not rospy.is_shutdown() and not finished:
+        while not rospy.is_shutdown():
             robot.command(r)
-            if len(robot.goals) > 1 and robot.currentGoalIndex >= len(robot.goals):
-                rospy.loginfo("FINISHED")
-                finished = True
             r.sleep()
 
     except Exception, e:
